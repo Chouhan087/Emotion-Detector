@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Detector - Final Project</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 60px auto; padding: 20px; }
+        textarea { width: 100%; min-height: 120px; padding: 12px; font-size: 16px; }
+        button { margin-top: 15px; padding: 12px 22px; cursor: pointer; }
+        #result { margin-top: 25px; padding: 15px; white-space: pre-wrap; }
+        .error { color: #b00020; }
+    </style>
+</head>
+<body>
+    <h1>Emotion Detector</h1>
+    <p>IBM Skills Network Final Project</p>
+    <form id="emotionForm">
+        <textarea id="textToAnalyze" name="textToAnalyze"
+            placeholder="Enter a sentence to analyze..."></textarea>
+        <br>
+        <button type="submit">Analyze Emotion</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById("emotionForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const text = document.getElementById("textToAnalyze").value.trim();
+            const result = document.getElementById("result");
+
+            if (!text) {
+                result.className = "error";
+                result.textContent = "Invalid input! Try again.";
+                return;
+            }
+
+            result.className = "";
+            result.textContent = "Analyzing...";
+
+            try {
+                const response = await fetch(
+                    "/emotionDetector?textToAnalyze=" + encodeURIComponent(text)
+                );
+                const body = await response.text();
+
+                if (!response.ok) {
+                    result.className = "error";
+                }
+                result.textContent = body;
+            } catch (error) {
+                result.className = "error";
+                result.textContent = "Invalid input! Try again.";
+            }
+        });
+    </script>
+</body>
+</html>
